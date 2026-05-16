@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Learning Agent</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <div class="container">
+        <h1>🤖 AI Learning Agent</h1>
+        <p class="subtitle">Learn anything with AI-powered guidance!</p>
+
+        <div class="input-box">
+            <input type="text" id="topicInput" placeholder="Enter any topic to learn...">
+            <button onclick="learnTopic()">Learn Now!</button>
+        </div>
+
+        <div id="loading" class="loading" style="display:none;">
+            ⏳ AI is thinking...
+        </div>
+
+        <div id="result" class="result-box" style="display:none;">
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
