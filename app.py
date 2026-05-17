@@ -29,11 +29,11 @@ def learn():
     """
     
     models = [
-        "google/gemma-3-4b-it:free",
-        "meta-llama/llama-3.2-3b-instruct:free",
-        "mistralai/mistral-7b-instruct:free",
-        "qwen/qwen-2.5-7b-instruct:free"
-    ]
+    "google/gemma-2-9b-it:free",
+    "deepseek/deepseek-v3-base:free",
+    "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+    "google/gemma-4-26b-a4b:free"
+]
     
     for model in models:
         try:
