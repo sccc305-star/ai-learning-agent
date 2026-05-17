@@ -4,7 +4,9 @@ import json
 
 app = Flask(__name__)
 
-OPENROUTER_API_KEY = "your-api-key-here"
+import os
+
+OPENROUTER_API_KEY = os.environ.get('OPENROUTER_API_KEY')
 @app.route('/')
 def home():
     return render_template('index.html')
