@@ -1,16 +1,3 @@
-from flask import Flask, render_template, request, jsonify
-import requests
-import json
-
-app = Flask(__name__)
-
-import os
-
-OPENROUTER_API_KEY = os.environ.get('OPENROUTER_API_KEY')
-@app.route('/')
-def home():
-    return render_template('index.html')
-
 @app.route('/learn', methods=['POST'])
 def learn():
     data = request.get_json()
@@ -28,28 +15,33 @@ def learn():
     Keep it beginner friendly.
     """
     
-    response = requests.post(
-        url="https://openrouter.ai/api/v1/chat/completions",
-        headers={
-            "Authorization": f"Bearer {OPENROUTER_API_KEY}",
-            "Content-Type": "application/json"
-        },
-        data=json.dumps({
-            "model": "deepseek/deepseek-r1:free",
-            "messages": [
-                {"role": "user", "content": prompt}
-            ]
-        })
-    )
+    models = [
+        "google/gemma-3-4b-it:free",
+        "meta-llama/llama-3.2-3b-instruct:free",
+        "mistralai/mistral-7b-instruct:free",
+        "qwen/qwen-2.5-7b-instruct:free"
+    ]
     
-    result = response.json()
+    for model in models:
+        try:
+            response = requests.post(
+                url="https://openrouter.ai/api/v1/chat/completions",
+                headers={
+                    "Authorization": f"Bearer {OPENROUTER_API_KEY}",
+                    "Content-Type": "application/json"
+                },
+                data=json.dumps({
+                    "model": model,
+                    "messages": [
+                        {"role": "user", "content": prompt}
+                    ]
+                })
+            )
+            result = response.json()
+            if 'choices' in result:
+                answer = result['choices'][0]['message']['content']
+                return jsonify({'result': answer})
+        except:
+            continue
     
-    if 'choices' in result:
-        answer = result['choices'][0]['message']['content']
-    else:
-        answer = str(result)
-    
-    return jsonify({'result': answer})
-
-if __name__ == '__main__':
-    app.run(debug=True)
+    return jsonify({'result': 'Service busy, please try again in a moment!'})
