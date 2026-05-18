@@ -15,18 +15,50 @@ def home():
 def learn():
     data = request.get_json()
     topic = data['topic']
+    level = data.get('level', 'Basic')
 
-    prompt = f"""
-    Topic: {topic}
+    if level == 'Basic':
+        prompt = f"""
+        Topic: {topic}
+        Level: Beginner
 
-    Please provide:
-    1. Simple explanation (3-4 lines)
-    2. 3 Key points to learn
-    3. 2 Real life examples
-    4. 1 Practice question
+        Please provide:
+        1. Simple explanation (3-4 lines) in very easy words
+        2. 3 Key points to learn
+        3. 2 Real life examples
+        4. 1 Simple practice question
 
-    Keep it beginner friendly.
-    """
+        Keep it very simple for beginners.
+        """
+    elif level == 'Medium':
+        prompt = f"""
+        Topic: {topic}
+        Level: Intermediate
+
+        Please provide:
+        1. Detailed explanation (5-6 lines)
+        2. 5 Key concepts to understand
+        3. 3 Real world use cases
+        4. 2 Practice questions with hints
+        5. Common mistakes to avoid
+
+        Target audience: Someone with basic knowledge.
+        """
+    else:
+        prompt = f"""
+        Topic: {topic}
+        Level: Advanced/Deep
+
+        Please provide:
+        1. In-depth technical explanation
+        2. 7 Advanced concepts
+        3. 3 Complex real world examples
+        4. 3 Challenging practice questions
+        5. Best practices and optimization tips
+        6. Related advanced topics to explore
+
+        Target audience: Experienced learner who wants deep knowledge.
+        """
 
     models = [
         "deepseek/deepseek-v4-flash:free",

@@ -138,3 +138,95 @@ h1 {
     .input-box { flex-direction: column; }
     .input-box button { width: 100%; }
 }
+.level-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.level-box span {
+    color: #c2185b;
+    font-weight: bold;
+}
+
+.level-btn {
+    padding: 8px 20px;
+    border: 2px solid #f48fb1;
+    border-radius: 20px;
+    background: white;
+    color: #c2185b;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.3s;
+}
+
+.level-btn:hover {
+    background: #fce4ec;
+}
+
+.level-btn.active {
+    background: linear-gradient(135deg, #e91e63, #c2185b);
+    color: white;
+    border-color: #c2185b;
+}
+
+.result-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.result-header span {
+    color: #c2185b;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.copy-btn {
+    padding: 8px 16px;
+    background: linear-gradient(135deg, #e91e63, #c2185b);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.3s;
+}
+
+.copy-btn:hover {
+    transform: scale(1.05);
+}
+
+.followup-box {
+    margin-top: 20px;
+    padding: 20px;
+    background: #fce4ec;
+    border-radius: 16px;
+}
+
+.followup-box p {
+    color: #c2185b;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.followup-box span {
+    display: inline-block;
+    padding: 8px 16px;
+    background: white;
+    color: #e91e63;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    margin: 5px;
+    border: 1px solid #f48fb1;
+    transition: all 0.3s;
+}
+
+.followup-box span:hover {
+    background: #e91e63;
+    color: white;
+}
