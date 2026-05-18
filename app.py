@@ -91,6 +91,69 @@ def learn():
             continue
 
     return jsonify({'result': 'Service busy, please try again in a moment!'})
+@app.route('/quiz', methods=['POST'])
+def quiz():
+    data = request.get_json()
+    topic = data['topic']
 
+    prompt = f"""
+    Create a quiz for topic: {topic}
+    
+    Give exactly 3 multiple choice questions.
+    Format each question like this:
+    
+    Q1: Question here?
+    A) Option 1
+    B) Option 2
+    C) Option 3
+    D) Option 4
+    Answer: A
+    
+    Q2: Question here?
+    A) Option 1
+    B) Option 2
+    C) Option 3
+    D) Option 4
+    Answer: B
+    
+    Q3: Question here?
+    A) Option 1
+    B) Option 2
+    C) Option 3
+    D) Option 4
+    Answer: C
+    """
+
+    models = [
+        "deepseek/deepseek-v4-flash:free",
+        "arcee-ai/arcee-trinity-7b-thinking:free",
+        "nousresearch/hermes-3-llama-3.1-405b:free",
+        "nvidia/nemotron-3-nano-omni:free",
+        "baidu/qianfan-cobuddy:free"
+    ]
+
+    for model in models:
+        try:
+            response = requests.post(
+                url="https://openrouter.ai/api/v1/chat/completions",
+                headers={
+                    "Authorization": f"Bearer {OPENROUTER_API_KEY}",
+                    "Content-Type": "application/json"
+                },
+                data=json.dumps({
+                    "model": model,
+                    "messages": [
+                        {"role": "user", "content": prompt}
+                    ]
+                })
+            )
+            result = response.json()
+            if 'choices' in result:
+                answer = result['choices'][0]['message']['content']
+                return jsonify({'result': answer})
+        except:
+            continue
+
+    return jsonify({'result': 'Service busy, please try again!'})
 if __name__ == '__main__':
     app.run(debug=True)

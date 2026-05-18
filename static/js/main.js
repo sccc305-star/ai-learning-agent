@@ -85,3 +85,38 @@ function showFollowup(topic) {
 document.getElementById('topicInput').addEventListener('keypress', function(e) {
     if (e.key === 'Enter') learnTopic();
 });
+async function generateQuiz() {
+    const topic = document.getElementById('topicInput').value;
+    
+    if (!topic) {
+        alert('Please enter a topic first!');
+        return;
+    }
+
+    const quizBtn = document.querySelector('.quiz-btn');
+    quizBtn.innerHTML = '⏳ Generating...';
+    quizBtn.disabled = true;
+
+    try {
+        const response = await fetch('/quiz', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ topic: topic })
+        });
+
+        const data = await response.json();
+
+        // Show quiz in result box
+        document.getElementById('result').innerHTML = 
+            '<h3 style="color:#c2185b;margin-bottom:15px;">📝 Quiz: ' + topic + '</h3>' + 
+            formatResult(data.result);
+
+        quizBtn.innerHTML = '📝 Take Quiz';
+        quizBtn.disabled = false;
+
+    } catch (error) {
+        quizBtn.innerHTML = '📝 Take Quiz';
+        quizBtn.disabled = false;
+        alert('Something went wrong! Please try again.');
+    }
+}
