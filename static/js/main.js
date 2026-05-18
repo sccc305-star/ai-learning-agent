@@ -105,11 +105,7 @@ async function generateQuiz() {
         });
 
         const data = await response.json();
-
-        // Show quiz in result box
-        document.getElementById('result').innerHTML = 
-            '<h3 style="color:#c2185b;margin-bottom:15px;">📝 Quiz: ' + topic + '</h3>' + 
-            formatResult(data.result);
+        displayInteractiveQuiz(data.result, topic);
 
         quizBtn.innerHTML = '📝 Take Quiz';
         quizBtn.disabled = false;
@@ -119,4 +115,91 @@ async function generateQuiz() {
         quizBtn.disabled = false;
         alert('Something went wrong! Please try again.');
     }
+}
+
+function displayInteractiveQuiz(quizText, topic) {
+    const lines = quizText.split('\n').filter(l => l.trim());
+    let questions = [];
+    let current = null;
+
+    lines.forEach(line => {
+        line = line.trim();
+        if (line.match(/^Q\d+:/)) {
+            if (current) questions.push(current);
+            current = { question: line.replace(/^Q\d+:\s*/, ''), options: [], answer: '' };
+        } else if (line.match(/^[A-D]\)/)) {
+            if (current) current.options.push(line);
+        } else if (line.match(/^Answer:/)) {
+            if (current) current.answer = line.replace('Answer:', '').trim();
+        }
+    });
+    if (current) questions.push(current);
+
+    let html = `<h3 style="color:#c2185b;margin-bottom:15px;">📝 Quiz: ${topic}</h3>`;
+    html += `<div id="score-box" style="display:none;padding:15px;background:#e8f5e9;border-radius:10px;margin-bottom:15px;text-align:center;font-size:1.2rem;color:#2e7d32;font-weight:bold;"></div>`;
+    
+    questions.forEach((q, i) => {
+        html += `<div class="quiz-question" id="q${i}">`;
+        html += `<p style="font-weight:bold;margin-bottom:10px;color:#333;">${i+1}. ${q.question}</p>`;
+        q.options.forEach(opt => {
+            const letter = opt[0];
+            html += `<button class="quiz-option" onclick="checkAnswer(this, '${letter}', '${q.answer}', 'q${i}')">${opt}</button>`;
+        });
+        html += `<div class="answer-feedback" id="feedback${i}"></div>`;
+        html += `</div><br>`;
+    });
+
+    html += `<button onclick="submitQuiz(${questions.length})" class="copy-btn" style="margin-top:10px;">✅ Submit Quiz</button>`;
+
+    document.getElementById('result').innerHTML = html;
+    window.quizAnswers = questions.map(q => q.answer);
+    window.userAnswers = new Array(questions.length).fill(null);
+}
+
+function checkAnswer(btn, selected, correct, qId) {
+    const qDiv = document.getElementById(qId);
+    const buttons = qDiv.querySelectorAll('.quiz-option');
+    
+    buttons.forEach(b => b.disabled = true);
+    
+    const qIndex = parseInt(qId.replace('q', ''));
+    window.userAnswers[qIndex] = selected;
+
+    if (selected === correct) {
+        btn.style.background = '#4caf50';
+        btn.style.color = 'white';
+        document.getElementById('feedback' + qIndex).innerHTML = '✅ Correct!';
+        document.getElementById('feedback' + qIndex).style.color = '#2e7d32';
+    } else {
+        btn.style.background = '#f44336';
+        btn.style.color = 'white';
+        document.getElementById('feedback' + qIndex).innerHTML = `❌ Wrong! Correct: ${correct}`;
+        document.getElementById('feedback' + qIndex).style.color = '#c62828';
+        
+        buttons.forEach(b => {
+            if (b.textContent[0] === correct) {
+                b.style.background = '#4caf50';
+                b.style.color = 'white';
+            }
+        });
+    }
+}
+
+function submitQuiz(total) {
+    const correct = window.userAnswers.filter((a, i) => a === window.quizAnswers[i]).length;
+    const scoreBox = document.getElementById('score-box');
+    scoreBox.style.display = 'block';
+    
+    if (correct === total) {
+        scoreBox.innerHTML = `🏆 Perfect Score! ${correct}/${total} — Excellent!`;
+        scoreBox.style.background = '#e8f5e9';
+    } else if (correct >= total/2) {
+        scoreBox.innerHTML = `👍 Good Job! ${correct}/${total} — Keep Learning!`;
+        scoreBox.style.background = '#fff9c4';
+    } else {
+        scoreBox.innerHTML = `📚 ${correct}/${total} — Review the topic and try again!`;
+        scoreBox.style.background = '#ffebee';
+    }
+    
+    scoreBox.scrollIntoView({behavior: 'smooth'});
 }
