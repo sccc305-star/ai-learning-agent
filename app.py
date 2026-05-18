@@ -15,27 +15,27 @@ def home():
 def learn():
     data = request.get_json()
     topic = data['topic']
-    
+
     prompt = f"""
     Topic: {topic}
-    
+
     Please provide:
     1. Simple explanation (3-4 lines)
     2. 3 Key points to learn
     3. 2 Real life examples
     4. 1 Practice question
-    
+
     Keep it beginner friendly.
     """
-    
-   models = [
-    "deepseek/deepseek-v4-flash:free",
-    "arcee-ai/arcee-trinity-7b-thinking:free",
-    "nousresearch/hermes-3-llama-3.1-405b:free",
-    "nvidia/nemotron-3-nano-omni:free",
-    "baidu/qianfan-cobuddy:free"
-]
-    
+
+    models = [
+        "deepseek/deepseek-v4-flash:free",
+        "arcee-ai/arcee-trinity-7b-thinking:free",
+        "nousresearch/hermes-3-llama-3.1-405b:free",
+        "nvidia/nemotron-3-nano-omni:free",
+        "baidu/qianfan-cobuddy:free"
+    ]
+
     for model in models:
         try:
             response = requests.post(
@@ -57,7 +57,7 @@ def learn():
                 return jsonify({'result': answer})
         except:
             continue
-    
+
     return jsonify({'result': 'Service busy, please try again in a moment!'})
 
 if __name__ == '__main__':
