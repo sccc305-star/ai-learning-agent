@@ -6,7 +6,6 @@ async function learnTopic() {
         return;
     }
 
-    // Loading show karo
     document.getElementById('loading').style.display = 'block';
     document.getElementById('result').style.display = 'none';
 
@@ -21,10 +20,9 @@ async function learnTopic() {
 
         const data = await response.json();
 
-        // Result show karo
         document.getElementById('loading').style.display = 'none';
         document.getElementById('result').style.display = 'block';
-        document.getElementById('result').innerHTML = data.result;
+        document.getElementById('result').innerHTML = formatResult(data.result);
 
     } catch (error) {
         document.getElementById('loading').style.display = 'none';
@@ -32,7 +30,18 @@ async function learnTopic() {
     }
 }
 
-// Enter key se bhi search ho
+function formatResult(text) {
+    return text
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*(.*?)\*/g, '<em>$1</em>')
+        .replace(/\n/g, '<br>');
+}
+
+function setTopic(topic) {
+    document.getElementById('topicInput').value = topic;
+    learnTopic();
+}
+
 document.getElementById('topicInput').addEventListener('keypress', function(e) {
     if (e.key === 'Enter') {
         learnTopic();

@@ -10,15 +10,23 @@
 
     <div class="container">
         <h1>🤖 AI Learning Agent</h1>
-        <p class="subtitle">Learn anything with AI-powered guidance!</p>
+        <p class="subtitle">Learn anything with AI-powered step-by-step guidance!</p>
 
         <div class="input-box">
-            <input type="text" id="topicInput" placeholder="Enter any topic to learn...">
-            <button onclick="learnTopic()">Learn Now!</button>
+            <input type="text" id="topicInput" placeholder="Enter any topic... e.g. Python, AI, Math">
+            <button onclick="learnTopic()">🚀 Learn Now!</button>
+        </div>
+
+        <div class="suggestions">
+            <span onclick="setTopic('Python Programming')">Python</span>
+            <span onclick="setTopic('Machine Learning')">Machine Learning</span>
+            <span onclick="setTopic('Web Development')">Web Dev</span>
+            <span onclick="setTopic('Data Science')">Data Science</span>
+            <span onclick="setTopic('Artificial Intelligence')">AI</span>
         </div>
 
         <div id="loading" class="loading" style="display:none;">
-            ⏳ AI is thinking...
+            🤔 AI is thinking...
         </div>
 
         <div id="result" class="result-box" style="display:none;">

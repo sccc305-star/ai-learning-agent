@@ -28,11 +28,12 @@ def learn():
     Keep it beginner friendly.
     """
     
-    models = [
-    "google/gemma-2-9b-it:free",
-    "deepseek/deepseek-v3-base:free",
-    "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
-    "google/gemma-4-26b-a4b:free"
+   models = [
+    "deepseek/deepseek-v4-flash:free",
+    "arcee-ai/arcee-trinity-7b-thinking:free",
+    "nousresearch/hermes-3-llama-3.1-405b:free",
+    "nvidia/nemotron-3-nano-omni:free",
+    "baidu/qianfan-cobuddy:free"
 ]
     
     for model in models:
