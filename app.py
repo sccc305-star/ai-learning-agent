@@ -5,7 +5,29 @@ import os
 
 app = Flask(__name__)
 
-OPENROUTER_API_KEY = os.environ.get('OPENROUTER_API_KEY')
+GROQ_API_KEY = os.environ.get('GROQ_API_KEY')
+
+def ask_ai(prompt):
+    try:
+        response = requests.post(
+            url="https://api.groq.com/openai/v1/chat/completions",
+            headers={
+                "Authorization": f"Bearer {GROQ_API_KEY}",
+                "Content-Type": "application/json"
+            },
+            data=json.dumps({
+                "model": "llama3-8b-8192",
+                "messages": [{"role": "user", "content": prompt}],
+                "temperature": 0.7
+            }),
+            timeout=30
+        )
+        result = response.json()
+        if 'choices' in result:
+            return result['choices'][0]['message']['content']
+    except:
+        pass
+    return "Service busy, please try again!"
 
 @app.route('/')
 def home():
@@ -41,8 +63,6 @@ def learn():
         3. 3 Real world use cases
         4. 2 Practice questions with hints
         5. Common mistakes to avoid
-
-        Target audience: Someone with basic knowledge.
         """
     else:
         prompt = f"""
@@ -56,41 +76,11 @@ def learn():
         4. 3 Challenging practice questions
         5. Best practices and optimization tips
         6. Related advanced topics to explore
-
-        Target audience: Experienced learner who wants deep knowledge.
         """
 
-    models = [
-        "deepseek/deepseek-v4-flash:free",
-        "arcee-ai/arcee-trinity-7b-thinking:free",
-        "nousresearch/hermes-3-llama-3.1-405b:free",
-        "nvidia/nemotron-3-nano-omni:free",
-        "baidu/qianfan-cobuddy:free"
-    ]
+    result = ask_ai(prompt)
+    return jsonify({'result': result})
 
-    for model in models:
-        try:
-            response = requests.post(
-                url="https://openrouter.ai/api/v1/chat/completions",
-                headers={
-                    "Authorization": f"Bearer {OPENROUTER_API_KEY}",
-                    "Content-Type": "application/json"
-                },
-                data=json.dumps({
-                    "model": model,
-                    "messages": [
-                        {"role": "user", "content": prompt}
-                    ]
-                })
-            )
-            result = response.json()
-            if 'choices' in result:
-                answer = result['choices'][0]['message']['content']
-                return jsonify({'result': answer})
-        except:
-            continue
-
-    return jsonify({'result': 'Service busy, please try again in a moment!'})
 @app.route('/quiz', methods=['POST'])
 def quiz():
     data = request.get_json()
@@ -98,24 +88,24 @@ def quiz():
 
     prompt = f"""
     Create a quiz for topic: {topic}
-    
+
     Give exactly 3 multiple choice questions.
     Format each question like this:
-    
+
     Q1: Question here?
     A) Option 1
     B) Option 2
     C) Option 3
     D) Option 4
     Answer: A
-    
+
     Q2: Question here?
     A) Option 1
     B) Option 2
     C) Option 3
     D) Option 4
     Answer: B
-    
+
     Q3: Question here?
     A) Option 1
     B) Option 2
@@ -124,36 +114,8 @@ def quiz():
     Answer: C
     """
 
-    models = [
-        "deepseek/deepseek-v4-flash:free",
-        "arcee-ai/arcee-trinity-7b-thinking:free",
-        "nousresearch/hermes-3-llama-3.1-405b:free",
-        "nvidia/nemotron-3-nano-omni:free",
-        "baidu/qianfan-cobuddy:free"
-    ]
+    result = ask_ai(prompt)
+    return jsonify({'result': result})
 
-    for model in models:
-        try:
-            response = requests.post(
-                url="https://openrouter.ai/api/v1/chat/completions",
-                headers={
-                    "Authorization": f"Bearer {OPENROUTER_API_KEY}",
-                    "Content-Type": "application/json"
-                },
-                data=json.dumps({
-                    "model": model,
-                    "messages": [
-                        {"role": "user", "content": prompt}
-                    ]
-                })
-            )
-            result = response.json()
-            if 'choices' in result:
-                answer = result['choices'][0]['message']['content']
-                return jsonify({'result': answer})
-        except:
-            continue
-
-    return jsonify({'result': 'Service busy, please try again!'})
 if __name__ == '__main__':
     app.run(debug=True)
