@@ -5,7 +5,7 @@ import os
 
 app = Flask(__name__)
 
-GROQ_API_KEY = os.environ.get('GROQ_API_KEY')
+GROQ_API_KEY = os.environ.get('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')
 
 def ask_ai(prompt):
     try:
