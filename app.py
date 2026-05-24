@@ -5,18 +5,18 @@ import os
 
 app = Flask(__name__)
 
-GROQ_API_KEY = os.environ.get('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')
+OPENROUTER_API_KEY = os.environ.get('OPENROUTER_API_KEY')
 
 def ask_ai(prompt):
     try:
         response = requests.post(
-            url="https://api.groq.com/openai/v1/chat/completions",
+            url="https://openrouter.ai/api/v1/chat/completions",
             headers={
-                "Authorization": f"Bearer {GROQ_API_KEY}",
+                "Authorization": f"Bearer {OPENROUTER_API_KEY}",
                 "Content-Type": "application/json"
             },
             data=json.dumps({
-                "model": "llama3-8b-8192",
+                "model": "openai/gpt-4o-mini",
                 "messages": [{"role": "user", "content": prompt}],
                 "temperature": 0.7
             }),
@@ -43,20 +43,17 @@ def learn():
         prompt = f"""
         Topic: {topic}
         Level: Beginner
-
         Please provide:
         1. Simple explanation (3-4 lines) in very easy words
         2. 3 Key points to learn
         3. 2 Real life examples
         4. 1 Simple practice question
-
         Keep it very simple for beginners.
         """
     elif level == 'Medium':
         prompt = f"""
         Topic: {topic}
         Level: Intermediate
-
         Please provide:
         1. Detailed explanation (5-6 lines)
         2. 5 Key concepts to understand
@@ -68,7 +65,6 @@ def learn():
         prompt = f"""
         Topic: {topic}
         Level: Advanced/Deep
-
         Please provide:
         1. In-depth technical explanation
         2. 7 Advanced concepts
@@ -88,30 +84,14 @@ def quiz():
 
     prompt = f"""
     Create a quiz for topic: {topic}
-
     Give exactly 3 multiple choice questions.
-    Format each question like this:
-
-    Q1: Question here?
+    Format:
+    Q1: Question?
     A) Option 1
     B) Option 2
     C) Option 3
     D) Option 4
     Answer: A
-
-    Q2: Question here?
-    A) Option 1
-    B) Option 2
-    C) Option 3
-    D) Option 4
-    Answer: B
-
-    Q3: Question here?
-    A) Option 1
-    B) Option 2
-    C) Option 3
-    D) Option 4
-    Answer: C
     """
 
     result = ask_ai(prompt)
